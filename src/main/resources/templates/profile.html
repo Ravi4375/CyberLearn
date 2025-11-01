@@ -1,0 +1,26 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<title>Profile</title>
+<style>body{font-family:Arial,sans-serif;margin:20px;background:#f9f9fb;color:#333}h1{color:#1a3c6e}a{color:#007bff;text-decoration:none}a:hover{text-decoration:underline}table{width:100%;border-collapse:collapse}th,td{padding:8px;border:1px solid #ddd}th{background:#f5f5f5}</style>
+</head>
+<body>
+<h1>Profile</h1>
+<p><a href="/dashboard">Dashboard</a></p>
+<p>Username: <span th:text="${user.username}"></span></p>
+<p>Email: <span th:text="${user.email}"></span></p>
+<p>Total Score: <span th:text="${user.totalScore}"></span></p>
+<h2>Quiz History</h2>
+<div th:if="${attempts.empty}"><p>No quiz history available yet.</p></div>
+<div th:unless="${attempts.empty}">
+<table>
+<tr><th>Category</th><th>Score</th><th>Percentage</th><th>Date</th></tr>
+<tr th:each="attempt : ${attempts}">
+<td th:text="${attempt.category.name}"></td>
+<td th:text="${attempt.score} + '/' + ${attempt.totalQuestions}"></td>
+<td th:text="${#numbers.formatDecimal(attempt.percentage, 1, 1)} + '%'"></td>
+<td th:text="${#temporals.format(attempt.attemptTime, 'yyyy-MM-dd HH:mm')}"></td>
+</tr>
+</table>
+</div>
+</body>
+</html>

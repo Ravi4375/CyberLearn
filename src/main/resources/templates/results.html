@@ -1,0 +1,277 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>CyberLearn Quiz Results</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .results-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        .results-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .results-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #00ffff, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .score-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        .score-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: rotate 3s linear infinite;
+        }
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+        .score-content {
+            position: relative;
+            z-index: 1;
+        }
+        .score-main {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #00ffff;
+            margin: 20px 0;
+        }
+        .score-percentage {
+            font-size: 2rem;
+            color: #ffff00;
+            margin-bottom: 20px;
+        }
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .score-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .score-label {
+            color: #b0b0ff;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ffff;
+        }
+        .perfect-score {
+            background: linear-gradient(45deg, #00ff00, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3rem;
+            text-align: center;
+            margin: 40px 0;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.5)); }
+            to { filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.8)); }
+        }
+        .wrong-answers {
+            margin-top: 40px;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .wrong-answer-card {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+        }
+        .question-num {
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        .answer-section {
+            margin: 15px 0;
+        }
+        .answer-label {
+            color: #b0b0ff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .user-answer {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+        }
+        .correct-answer {
+            color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+        }
+        .explanation {
+            color: #ffff00;
+            background: rgba(255, 255, 0, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #ffff00;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #000;
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid #00ffff;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🏆 Quiz Results</div>
+    </div>
+    
+    <div class="results-container">
+        <div class="results-header">
+            <h1 class="results-title">🎯 Your Performance</h1>
+        </div>
+        
+        <div class="score-card">
+            <div class="score-content">
+                <div class="score-main">
+                    <span th:text="${score}">0</span>/<span th:text="${totalQuestions}">0</span>
+                </div>
+                <div class="score-percentage">
+                    <span th:text="${#numbers.formatDecimal(percentage, 1, 1)}">0.0</span>% Complete
+                </div>
+                
+                <div class="score-breakdown" th:if="${baseScore}">
+                    <div class="score-item">
+                        <div class="score-label">Base Score</div>
+                        <div class="score-value" th:text="${baseScore}">0</div>
+                    </div>
+                    <div class="score-item" th:if="${bonusPoints > 0}">
+                        <div class="score-label">Bonus Points</div>
+                        <div class="score-value" th:text="${bonusPoints}">0</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Final Score</div>
+                        <div class="score-value" th:text="${finalScore}">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div th:if="${wrongAnswers == null or wrongAnswers.empty}" class="perfect-score">
+            🎉 Perfect Score! 🎉<br>
+            <span style="font-size: 1.5rem;">Congratulations! You're a cybersecurity expert!</span>
+        </div>
+        
+        <div th:if="${wrongAnswers != null and !wrongAnswers.empty}" class="wrong-answers">
+            <h2 class="section-title">📝 Review & Learn</h2>
+            
+            <div th:each="wrong : ${wrongAnswers}" class="wrong-answer-card">
+                <div class="question-num">
+                    ❌ Question <span th:text="${wrong.questionNumber}"></span>
+                </div>
+                
+                <div class="answer-section">
+                    <div class="answer-label">📝 Question:</div>
+                    <div th:text="${wrong.questionText}"></div>
+                </div>
+                
+                <div class="answer-section">
+                    <div class="answer-label">🔴 Your Answer:</div>
+                    <div class="user-answer" th:text="${wrong.userAnswer}"></div>
+                </div>
+                
+                <div class="answer-section">
+                    <div class="answer-label">✅ Correct Answer:</div>
+                    <div class="correct-answer" th:text="${wrong.correctAnswer}"></div>
+                </div>
+                
+                <div class="answer-section">
+                    <div class="answer-label">💡 Explanation:</div>
+                    <div class="explanation" th:text="${wrong.explanation}"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="/dashboard" class="btn btn-primary">🏠 Dashboard</a>
+            <a href="/leaderboard" class="btn btn-secondary">🏆 Leaderboard</a>
+        </div>
+    </div>
+</body>
+</html>

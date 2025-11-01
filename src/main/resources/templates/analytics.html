@@ -1,0 +1,14 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<title>Analytics</title>
+<style>body{font-family:Arial,sans-serif;margin:20px;background:#f9f9fb;color:#333}h1{color:#1a3c6e}a{color:#007bff;text-decoration:none}a:hover{text-decoration:underline}</style>
+</head>
+<body>
+<h1>Analytics</h1>
+<p><a href="/dashboard">Dashboard</a></p>
+<p>Total Quizzes Taken: <span th:text="${totalQuizzes}"></span></p>
+<p>Total Questions Answered: <span th:text="${totalQuestions}"></span></p>
+<p>Total Correct Answers: <span th:text="${totalCorrect}"></span></p>
+<p>Total Points Earned: <span th:text="${totalScore}"></span></p>
+</body>
+</html>

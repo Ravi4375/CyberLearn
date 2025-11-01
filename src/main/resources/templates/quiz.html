@@ -1,0 +1,237 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>CyberLearn Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .quiz-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #00ffff;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .question-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            border-color: rgba(255, 0, 255, 0.6);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+        }
+        .question-number {
+            color: #00ffff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .code-snippet {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+        .code-snippet::before {
+            content: 'CODE';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 0.8rem;
+            color: #00ffff;
+            opacity: 0.7;
+        }
+        .options-container {
+            margin-top: 25px;
+        }
+        .option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: rgba(0, 255, 255, 0.5);
+            transform: translateX(5px);
+        }
+        .option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #00ffff;
+        }
+        .option.selected {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+        }
+        .submit-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .submit-btn {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #000;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
+        }
+        .back-link {
+            color: #00ffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 1px solid #00ffff;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover {
+            background: rgba(0, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .no-questions {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .no-questions h2 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        function updateProgress() {
+            const questions = document.querySelectorAll('.question-card');
+            const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+            const progress = (answered / questions.length) * 100;
+            document.querySelector('.progress-fill').style.width = progress + '%';
+        }
+        
+        function selectOption(radio) {
+            const options = radio.closest('.question-card').querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            radio.closest('.option').classList.add('selected');
+            updateProgress();
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', () => selectOption(radio));
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🛡️ CyberLearn Quiz</div>
+    </div>
+    
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+        </div>
+        
+        <div th:if="${questions != null and !questions.empty}">
+            <div class="quiz-title">🎯 Cybersecurity Challenge</div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            
+            <form action="/quiz/submit" method="POST">
+                <div th:each="question, iterStat : ${questions}" class="question-card">
+                    <div class="question-number">
+                        Question <span th:text="${iterStat.count}"></span> of <span th:text="${questions.size()}"></span>
+                    </div>
+                    <div class="question-text" th:text="${question.questionText}"></div>
+                    
+                    <div th:if="${question.codeSnippet}" class="code-snippet">
+                        <pre><code th:text="${question.codeSnippet}"></code></pre>
+                    </div>
+                    
+                    <div class="options-container">
+                        <div th:each="option : ${questionOptions[question.id]}" class="option">
+                            <input type="radio" th:name="'question_' + ${question.id}" th:value="${option.id}" th:id="${option.id}" required>
+                            <label th:for="${option.id}" th:text="${option.optionText}"></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="submit-container">
+                    <button type="submit" class="submit-btn">🚀 Submit Quiz</button>
+                </div>
+            </form>
+        </div>
+        
+        <div th:if="${questions == null or questions.empty}" class="no-questions">
+            <h2>😕 No Questions Available</h2>
+            <p>This category doesn't have any questions yet. Please check back later!</p>
+            <br>
+            <a href="/dashboard" class="back-link">Return to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

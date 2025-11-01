@@ -1,0 +1,203 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>CyberLearn Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .score-badge {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #000;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .nav {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        .nav a:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+            transform: translateY(-2px);
+        }
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .welcome {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .welcome h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00ffff, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .category-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        .category-card:hover::before {
+            left: 100%;
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 0, 255, 0.6);
+            box-shadow: 0 15px 40px rgba(0, 255, 255, 0.2);
+        }
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .category-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #00ffff;
+        }
+        .category-desc {
+            color: #b0b0ff;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .start-quiz-btn {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #000;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .start-quiz-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+        .difficulty {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .difficulty.easy { background: rgba(0, 255, 0, 0.3); color: #00ff00; }
+        .difficulty.medium { background: rgba(255, 255, 0, 0.3); color: #ffff00; }
+        .difficulty.hard { background: rgba(255, 0, 0, 0.3); color: #ff0000; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">🛡️ CyberLearn</div>
+            <div class="user-info">
+                <span>Welcome, <strong th:text="${user.username}"></strong>!</span>
+                <div class="score-badge">🏆 <span th:text="${user.totalScore}">0</span> pts</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="nav">
+        <a href="/profile">👤 Profile</a>
+        <a href="/leaderboard">🏆 Leaderboard</a>
+        <a href="/analytics">📊 Analytics</a>
+        <a href="/logout">🚪 Logout</a>
+    </div>
+    
+    <div class="main-content">
+        <div class="welcome">
+            <h1>Choose Your Challenge</h1>
+            <p>Test your cybersecurity knowledge across different domains</p>
+        </div>
+        
+        <div class="categories-grid">
+            <div th:each="category : ${categories}" class="category-card">
+                <div class="difficulty" th:classappend="${category.difficultyLevel?.name()?.toLowerCase()}" th:text="${category.difficultyLevel}">MEDIUM</div>
+                <div class="category-icon">
+                    <span th:switch="${category.name}">
+                        <span th:case="'Network Security'">🌐</span>
+                        <span th:case="'Web Security'">🌍</span>
+                        <span th:case="'Cryptography'">🔐</span>
+                        <span th:case="'Malware Analysis'">🐛</span>
+                        <span th:case="'Incident Response'">🚨</span>
+                        <span th:case="*">🛡️</span>
+                    </span>
+                </div>
+                <h3 class="category-title" th:text="${category.name}">Category Name</h3>
+                <p class="category-desc" th:text="${category.description}">Category description</p>
+                <a th:href="@{/quiz/{id}(id=${category.id})}" class="start-quiz-btn">🚀 Start Quiz</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
